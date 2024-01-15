@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Viewdashboard extends Model
 {
     use HasFactory;
-    protected $table = 'view_dashboard';
+    protected $table = 'view_monitoring';
     protected $guarded = [];
     public $timestamps = false;
     // function mjabatan(){

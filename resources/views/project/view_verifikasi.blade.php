@@ -380,7 +380,55 @@
 													</div>
 													
 												</div>
-												
+												<div class="alasan_lanjut row mb-1">
+													<div class="col-lg-2 label-col">
+														<label for="nameInput" class="form-label">Type Tagihan </label>
+													</div>
+													<div class="col-lg-4">
+														<div class="input-group input-group-sm">
+															<span class="input-group-text" id="inputGroup-sizing-sm" ><i class="mdi mdi-arrow-down-drop-circle-outline"></i></span>
+															<select   class="form-control form-control-sm" name="type_tagihan" onchange="pilih_type_bayar(this.value)" placeholder="0000">
+																<option value="">--Pilih-----------</option>
+																<option value="1">Tagihan dalam project</option>
+																<option value="2">Tagihan dalam pekerjaan</option>
+															</select>
+														</div>
+													</div>
+													
+												</div>
+												<div class="alasan_lanjut row mb-1">
+													<div class="col-lg-2 label-col">
+														<label for="nameInput" class="form-label">Termin Pembayaran  </label>
+													</div>
+													<div class="col-lg-10">
+														<div class="alert alert-warning shadow shadow" role="alert">
+															<strong>Perhatian </strong>,  Jika <b>Tipe tagihan</b> yaitu "<b><i>Tagihan dalam pekerjaan</i></b>" termin tidak wajib diisi
+														</div>
+														<table width="100%">
+															<thead>
+																<tr>
+																	<th width="8%">NO</th>
+																	<th>Keterangan</th>
+																	<th  width="10%">%</th>
+																</tr>
+															</thead>
+															<tbody>
+															@for($x=1;$x<11;$x++)
+															
+																<tr>
+																	<td>{{$x}}</td>
+																	<td><input type="text" class="form-control form-control-sm"  name="termin[]" value="" placeholder="Enter....."></td>
+																	<td><input type="number" class="form-control form-control-sm"  name="persen[]" value="" placeholder="1234"></td>
+																</tr>
+															
+															@endfor
+															</tbody>
+														</table>
+														
+													</div>
+													
+													
+												</div>
 											
 										</div>
 									</div>

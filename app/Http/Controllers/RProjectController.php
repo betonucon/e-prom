@@ -24,8 +24,10 @@ use App\Models\ProjectPersonal;
 use App\Models\ViewProjectMaterial;
 use App\Models\ProjectRisiko;
 use App\Models\ProjectOperasional;
+use App\Models\ViewDashboard;
 use App\Models\Material;
 use App\Models\LogPengajuan;
+use App\Models\ProjectTagihan;
 use App\Models\Biaya;
 use App\Models\ViewCost;
 use App\Models\User;
@@ -82,57 +84,60 @@ class RProjectController extends Controller
         $id=decoder($request->id);
         
         $data=ViewHeaderProject::where('id',$id)->first();
-        
-        if($id==0){
-            $disabled='';
-        }else{
-            $disabled='readonly';
-        }
-        if(Auth::user()->role_id==1){
-            
-        }
-        if(Auth::user()->role_id==2){
-            if($data->status_id==5){
-                return view('project.view_project',compact('template','data','disabled','id'));
+        if($request->act!=2){
+            if($id==0){
+                $disabled='';
             }else{
-                return view('project.view_all',compact('template','data','disabled','id'));
+                $disabled='readonly';
             }
-        }
-        if(Auth::user()->role_id==3){
-            if($data->status_id==4){
-                return view('project.view_project',compact('template','data','disabled','id'));
-            }else{
-                return view('project.view_all',compact('template','data','disabled','id'));
+            if(Auth::user()->role_id==1){
+                
             }
-        }
-        if(Auth::user()->role_id==4){
-            if($data->status_id==2){
-                return view('project.view_project',compact('template','data','disabled','id'));
-            }else{
-                return view('project.view_all',compact('template','data','disabled','id'));
-            }
-        }
-        if(Auth::user()->role_id==5){
-
-        }
-        if(Auth::user()->role_id==6){
-            if($data->status_id>1){
-                if($data->status_id==6){
-                    return view('project.view_verifikasi',compact('template','data','disabled','id'));
+            if(Auth::user()->role_id==2){
+                if($data->status_id==5){
+                    return view('project.view_project',compact('template','data','disabled','id'));
                 }else{
                     return view('project.view_all',compact('template','data','disabled','id'));
                 }
-                
-            }else{
-                return view('project.view',compact('template','data','disabled','id'));
             }
-        }
-        if(Auth::user()->role_id==7){
-            if($data->status_id==3){
-                return view('project.view_project',compact('template','data','disabled','id'));
-            }else{
-                return view('project.view_all',compact('template','data','disabled','id'));
+            if(Auth::user()->role_id==3){
+                if($data->status_id==4){
+                    return view('project.view_project',compact('template','data','disabled','id'));
+                }else{
+                    return view('project.view_all',compact('template','data','disabled','id'));
+                }
             }
+            if(Auth::user()->role_id==4){
+                if($data->status_id==2){
+                    return view('project.view_project',compact('template','data','disabled','id'));
+                }else{
+                    return view('project.view_all',compact('template','data','disabled','id'));
+                }
+            }
+            if(Auth::user()->role_id==5){
+
+            }
+            if(Auth::user()->role_id==6){
+                if($data->status_id>1){
+                    if($data->status_id==6){
+                        return view('project.view_verifikasi',compact('template','data','disabled','id'));
+                    }else{
+                        return view('project.view_all',compact('template','data','disabled','id'));
+                    }
+                    
+                }else{
+                    return view('project.view',compact('template','data','disabled','id'));
+                }
+            }
+            if(Auth::user()->role_id==7){
+                if($data->status_id==3){
+                    return view('project.view_project',compact('template','data','disabled','id'));
+                }else{
+                    return view('project.view_all',compact('template','data','disabled','id'));
+                }
+            }
+        }else{
+            return view('project.view_all',compact('template','data','disabled','id'));
         }
         
         
@@ -193,7 +198,7 @@ class RProjectController extends Controller
         if(Auth::user()->role_id==7){
             $data=$query->where('status_id','>',2);
         }
-        $data = $query->orderBy('id','Desc')->get();
+        $data = $query->where('status_id','<',8)->orderBy('id','Desc')->get();
 
         return Datatables::of($data)
             ->addColumn('seleksi', function ($row) {
@@ -356,6 +361,117 @@ class RProjectController extends Controller
                         </div>
                     </span>';
                 }
+                return $btn;
+            })
+            ->addColumn('judul', function ($row) {
+                if(strlen($row->deskripsi_project)>50){
+                    return '<p class="mb-0" title="'.$row->deskripsi_project.'">'.substr($row->deskripsi_project,0,50).'...</p>';
+                }else{
+                    return $row->deskripsi_project;
+                }
+                
+            })
+            ->addColumn('statusnya', function ($row) {
+                if($row->status_id==1){
+                    if($row->active==1){
+                        $btn='<div class="form-check form-switch form-switch-custom form-switch-danger">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck13" onclick="switch_data(`'.encoder($row->id).'`,1)" checked>
+                                </div>';
+                    }else{
+                        $btn='<div class="form-check form-switch form-switch-custom form-switch-danger">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck13" onclick="switch_data(`'.encoder($row->id).'`,3)" >
+                                </div>';
+                    }
+                }else{
+                    $btn='<div class="form-check form-switch form-switch-custom form-switch-danger">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck13" disabled checked>
+                                </div>';
+                }
+                
+                return $btn;
+            })
+            
+            ->rawColumns(['action','rolenya','statusnya','sts','deskripsi_project','customer','judul'])
+            ->make(true);
+    }
+    public function get_data_view(request $request)
+    {
+        error_reporting(0);
+        $usr=User::where('id',$request->id)->first();
+        $query = ViewHeaderProject::query();
+        
+        $data=$query->where('username',$usr->username);
+        
+        $data = $query->orderBy('id','Desc')->get();
+
+        return Datatables::of($data)
+            ->addColumn('seleksi', function ($row) {
+                $btn='<span class="btn btn-success btn-xs" onclick="pilih_employe(`'.$row->nik.'`,`'.$row->nama.'`)">Pilih</span>';
+                return $btn;
+            })
+            ->addColumn('sts', function ($row) {
+                if($row->revisi==1){
+                    $text='<b>Revisi</b>';
+                    $color="danger";
+                }else{
+                    if($row->status_id==50){
+                        $text='';
+                        $color="danger";
+                    }else{
+                        $text='';
+                        $color="secondary";
+                    }
+                    
+                }
+                if($row->status_id>7){
+                    if($row->status_id==50){
+                        $btn='<span class="badge badge-outline-danger" onclick="tambah('.encoder($row->id).')">Dibatalkan</span>';
+                    }else{
+                        $btn='<span class="badge badge-outline-success" onclick="tambah('.encoder($row->id).')">Kontrak</span>';
+                    }
+                    
+                }else{
+                    $btn='<span class="badge badge-outline-secondary" onclick="tambah('.encoder($row->id).')">Rencana </span>';
+                }
+                
+                return $btn;
+            })
+            ->addColumn('deskripsi_project', function ($row) {
+                if($row->active==1){
+                    $btn='<a href="javascript: void(0);" onclick="tambah(`'.encoder($row->id).'`)" class="text-mute">'.$row->deskripsi_project.'</a>';
+                }else{
+                    $btn='<a href="javascript: void(0);"  onclick="tambah(`'.encoder($row->id).'`)" class="text-mute">'.$row->deskripsi_project.'</a>';
+                }
+                return $btn;
+            })
+            ->addColumn('customer', function ($row) {
+                if($row->active==1){
+                    $btn='<a href="javascript: void(0);" onclick="tambah(`'.encoder($row->id).'`)" class="text-mute">'.$row->customer.'</a>';
+                }else{
+                    $btn='<a href="javascript: void(0);"  onclick="tambah(`'.encoder($row->id).'`)" class="text-mute">'.$row->customer.'</a>';
+                }
+                return $btn;
+            })
+            
+            ->addColumn('action', function ($row) {
+                
+                    $color="soft-secondary";
+                     $btn='
+                    <span class="dtr-data">
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-'.$color.' btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ri-more-fill align-middle"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li onclick="tambah(`'.encoder($row->id).'`,'.$row->status_id.')">
+                                    <a class="dropdown-item remove-item-btn">
+                                        <i class="mdi mdi-share-all-outline me-2 text-muted"></i> View Project
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>';
+                
                 return $btn;
             })
             ->addColumn('judul', function ($row) {
@@ -978,12 +1094,53 @@ class RProjectController extends Controller
            
         }
     }
+    public function get_data_dashboard_pm(request $request)
+    {
+        error_reporting(0);
+        
+        $data = Viewdashboardpm::where('username',Auth::user()->username)->first();
+        $success=[];
+        $success['id']=$data->id;
+        $success['project']=$data->total_project;
+        $success['rencana']=$data->total_rencana;
+        $success['penyusunan']=$data->total_penyusunan;
+        $success['verifikasi']=$data->total_verifikasi;
+        $success['approve']=$data->total_approve;
+        $success['selesai']=$data->total_selesai;
+        $success['persen']=(int) $data->persen;
+        return response()->json($success, 200);
+    }
+    public function get_data_dashboard(request $request)
+    {
+        error_reporting(0);
+        
+        $data = ViewDashboard::where('id',1)->first();
+        $success=[];
+        $success['id']=$data->id;
+        $success['project']=$data->total_project;
+        $success['rencana']=$data->total_rencana;
+        $success['penyusunan']=$data->total_penyusunan;
+        $success['verifikasi']=$data->total_verifikasi;
+        $success['approve']=$data->total_approve;
+        $success['selesai']=$data->total_selesai;
+        $success['persen']=(int) $data->persen;
+        return response()->json($success, 200);
+    }
     public function store_verifikasi(request $request){
         error_reporting(0);
         $rules = [];
         $messages = [];
         
-        
+        $fore=count((array) $request->persen);
+        $array_sum=array_sum((array) $request->persen);
+        // $termin=0;
+        // for($x=0;$x<$fore;$x++){
+        //     if($request->persen[$x]==0 || $request->termin[$x]==""){
+        //         $termin+=0;
+        //     }else{
+        //         $termin+=1;
+        //     }
+        // }
         if($request->status_id==8){
             $rules['cost_center']= 'required';
             $messages['cost_center.required']= 'Harap lengkapi cost center';
@@ -991,11 +1148,18 @@ class RProjectController extends Controller
             $messages['nik_pm.required']= 'Harap lengkapi data project manager';
             $rules['no_kontrak']= 'required';
             $messages['no_kontrak.required']= 'Harap lengkapi nomor kontrak';
+            $rules['type_tagihan']= 'required';
+            $messages['type_tagihan.required']= 'Pilih type tagihan '.$termin;
             if($request->file!=""){
                 $rules['file']= 'required|mimes:pdf';
                 $messages['file.required']= 'Harap lengkapi file';
                 $messages['file.mimes']= 'Format file kontrak harus pdf';
             }
+            if($request->type_tagihan==1 && $array_sum!=100){
+                $rules['cccc']= 'required';
+                $messages['cccc.required']= 'Masukan termin pembayaran dan total persen adalah 100%';
+            }
+            
             $cekcost=HeaderProject::where('status_id',6)->where('id',$request->id)->count();
             // $ceksolved=HeaderProject::where('status_id','>',7)->where('status_id','!=',50)->where('cost_center_project',$request->cost_center)->count();
             if($cekcost==0){
@@ -1031,12 +1195,37 @@ class RProjectController extends Controller
                     
                 ]);
                 if($request->status_id==8){
+                    $termin=0;
+                    if($request->type_tagihan=1){
+                        for($x=0;$x<$fore;$x++){
+                            if($request->persen[$x]==0 || $request->termin[$x]==""){
+                                $termin+=0;
+                            }else{
+                                $termin+=1;
+                                $tagihan=ProjectTagihan::create([
+                                    'project_header_id'=>$request->id,
+                                    'cost_center'=>$request->cost_center,
+                                    'cost_center_no'=>$request->cost_center,
+                                    'no'=>($x+1),
+                                    'type_tagihan'=>1,
+                                    'persen'=>$request->persen[$x],
+                                    'termin'=>$request->termin[$x],
+                                    'status_tagihan_id'=>0,
+                                    'created_at'=>date('Y-m-d H:i:s'),
+                                ]);
+                            }
+                        }
+                    }else{
+
+                    }
                     $datadet=HeaderProject::where('id',$request->id)->update([
                         
                         'nik_pm'=>$request->nik_pm,
                         'nama_pm'=>$request->nama_pm,
                         'no_kontrak'=>$request->no_kontrak,
                         'status_kontrak_id'=>2,
+                        'type_tagihan'=>$request->type_tagihan,
+                        'termin'=>$termin,
                         'cost_center_project'=>$request->cost_center,
                         'approve_kontrak'=>date('Y-m-d H:i:s'),
                     ]);

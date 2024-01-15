@@ -51,6 +51,14 @@ return [
             'driver' => 'local',
             'root'   => public_path() . '/attach/kontrak',
         ],
+        'public_pekerjaan' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/attach/pekerjaan',
+        ],
+        'public_profil' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/attach/profil',
+        ],
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

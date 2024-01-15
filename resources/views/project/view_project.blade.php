@@ -680,7 +680,7 @@
 									buttonsStyling:!1,
 									showCloseButton:!0
 								});
-								location.assign("{{url('kontrak')}}");
+								location.assign("{{url('project')}}");
 							}else{
 								document.getElementById("loadnya").style.width = "0px";
 								Swal.fire({

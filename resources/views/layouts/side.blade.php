@@ -52,6 +52,11 @@
                         <!-- sales-->
                         @if(Auth::user()->role_id==6)
                             <li class="nav-item" style="background: #ebebeb1a; border-bottom: solid 1px #dadaef;">
+                                <a class="nav-link menu-link" href="{{url('customer')}}">
+                                    <i class="mdi mdi-account-circle-outline"></i> <span  >Customer</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" style="background: #ebebeb1a; border-bottom: solid 1px #dadaef;">
                                 <a class="nav-link menu-link" href="{{url('project')}}">
                                     <i class="mdi mdi-cube-outline"></i> <span  >RABOB</span>
                                 </a>
@@ -60,13 +65,18 @@
                         @endif
                         @if(Auth::user()->role_id==3)
                             <li class="nav-item" style="background: #ebebeb1a; border-bottom: solid 1px #dadaef;">
-                                <a class="nav-link menu-link" href="{{url('home')}}">
+                                <a class="nav-link menu-link" href="{{url('sales')}}">
                                     <i class="mdi mdi-speedometer"></i> <span  >Sales Performance</span>
                                 </a>
                             </li>
                             <li class="nav-item" style="background: #ebebeb1a; border-bottom: solid 1px #dadaef;">
                                 <a class="nav-link menu-link" href="{{url('project')}}">
-                                    <i class="mdi mdi-cube-outline"></i> <span  >Konf RABOB</span>
+                                @if(count_approve()>0)
+                                <i class="mdi mdi-cube-outline"></i> <span  >Konf RABOB</span>
+                                @else
+                                <i class="mdi mdi-cube-outline"></i> <span  >Konf RABOB</span>
+                                @endif
+                                    
                                 </a>
                             </li>
                             <li class="nav-item" style="background: #ebebeb1a; border-bottom: solid 1px #dadaef;">
@@ -103,10 +113,10 @@
                                 <ul class="nav nav-sm flex-column" style="background: #e1d2d25e;">
                                    
                                         <li class="nav-item">
-                                            <a href="{{url('kontrak')}}" class="nav-link"  >Project</a>
+                                            <a href="{{url('kontrak/pm')}}" class="nav-link"  >Project</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{url('kontrak/pekerjaan')}}" class="nav-link"  >Pekerjaan</a>
+                                            <a href="{{url('pekerjaan')}}" class="nav-link"  >Pekerjaan</a>
                                         </li>
                                     
                                 </ul>

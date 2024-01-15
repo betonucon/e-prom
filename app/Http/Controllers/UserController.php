@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 use App\Models\User;
+use App\Models\Sales;
 
 class UserController extends Controller
 {
@@ -17,7 +18,89 @@ class UserController extends Controller
        
         return view('user.index');
     }
-    
+    public function index_sales(request $request)
+    {
+       
+        return view('sales.index');
+    }
+    public function view_sales(request $request,$id=null)
+    {
+    //    dd($id);
+        $data = Sales::find($id);
+        return view('sales.view',compact('data','id'));
+    }
+    public function get_data_sales(request $request)
+    {
+        error_reporting(0);
+        $query = Sales::query();
+        $data = $query->where('role_id',6)->get();
+        $success=[];
+        $det=[];
+        foreach($data as $o){
+            if($o->persen<51){
+                $color="danger";
+            }else{
+                $color="primary";
+            }
+            $scs=[];
+            $scs['id']=$o->id;
+            $scs['name']=$o->name;
+            $scs['photo']=img_profil($o->id);
+            $scs['email']=$o->email;
+            $scs['username']=$o->username;
+            $scs['prospek']=$o->prospek;
+            $scs['kontrak']=$o->kontrak;
+            $scs['gagal']=$o->gagal;
+            $scs['persen']=$o->persen.'%';
+            $scs['role']=$o->role;
+            $scs['color']=$color;
+            
+            $det[]=$scs;
+        }
+        $success=$det;
+        return response()->json($success, 200);
+
+    }
+    public function store_avatar(request $request){
+        error_reporting(0);
+        $rules = [];
+        $messages = [];
+        
+        $rules['file_avatar']= 'required|mimes:jpg,png,gif,jpeg';
+        $messages['file_avatar.required']= 'Upload Avatar';
+        $messages['file_avatar.mimes']= 'Hanya menerima format image';
+
+       
+        $validator = Validator::make($request->all(), $rules, $messages);
+        $val=$validator->Errors();
+
+
+        if ($validator->fails()) {
+            echo'<div class="nitof"><b>Oops Error !</b><br><div class="isi-nitof">';
+                foreach(parsing_validator($val) as $value){
+                    
+                    foreach($value as $isi){
+                        echo'-&nbsp;'.$isi.'<br>';
+                    }
+                }
+            echo'</div></div>';
+        }else{
+            $thumbnail = $request->file('file_avatar');
+            $thumbnailFileName =Auth::user()->id.date('ymdhis').'.'. $thumbnail->getClientOriginalExtension();
+            $filename =$thumbnailFileName;
+            $file = \Storage::disk('public_profil');
+            
+            if($file->put($filename, file_get_contents($thumbnail))){
+                $data=User::where('id',Auth::user()->id)->update([
+                    'photo'=>$filename,
+                ]);
+
+                echo'@ok';
+            }
+                    
+                
+        }
+    }
     public function modal(request $request)
     {
         error_reporting(0);

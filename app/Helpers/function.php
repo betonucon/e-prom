@@ -221,6 +221,14 @@ function url_plug(){
     $data=url('/');
     return $data;
 }
+function url_img(){
+    $data=public_path('img');
+    return $data;
+}
+function url_foto(){
+    $data=public_path('attach\pekerjaan');
+    return $data;
+}
 function barcoderider($id,$w,$h){
     $d = new Milon\Barcode\DNS2D();
     $d->setStorPath(__DIR__.'/cache/');
@@ -246,6 +254,10 @@ function tanggal_indo_only($tgl){
     $data=date('Y-m-d',strtotime($tgl));
     return $data;
 }
+function tgl_example($tgl){
+    $data=date('d-m-Y',strtotime($tgl));
+    return $data;
+}
 function prev_tanggal($tgl,$param){
    $tanggal=$tgl;
    $data    =date('Y-m-d 00:00:00.000', strtotime("$param days", strtotime($tanggal)));
@@ -256,7 +268,57 @@ function tanggal_tempo($param){
    $data    =date('Y-m-d 00:00:00.000', strtotime("$param days", strtotime($tanggal)));
    return $data;
 }
-
+function facebook_time_ago($timestamp){  
+   $time_ago = strtotime($timestamp);  
+   $current_time = time();  
+   $time_difference = $current_time - $time_ago;  
+   $seconds = $time_difference;  
+   $minutes      = round($seconds / 60 );        // value 60 is seconds  
+   $hours        = round($seconds / 3600);       //value 3600 is 60 minutes * 60 sec  
+   $days         = round($seconds / 86400);      //86400 = 24 * 60 * 60;  
+   $weeks        = round($seconds / 604800);     // 7*24*60*60;  
+   $months       = round($seconds / 2629440);    //((365+365+365+365+366)/5/12)*24*60*60  
+   $years        = round($seconds / 31553280);   //(365+365+365+365+366)/5 * 24 * 60 * 60  
+   if($seconds <= 60) {  
+    return "Just Now";  
+   } else if($minutes <=60) {  
+    if($minutes==1){  
+      return "one minute ago";  
+    }else {  
+      return "$minutes minutes ago";  
+    }  
+   } else if($hours <=24) {  
+    if($hours==1) {  
+      return "an hour ago";  
+    } else {  
+      return "$hours hour ago";  
+    }  
+   }else if($days <= 7) {  
+    if($days==1) {  
+      return "yesterday";  
+    }else {  
+      return "$days days ago";  
+    }  
+   }else if($weeks <= 4.3) {  //4.3 == 52/12
+    if($weeks==1){  
+      return "a week ago";  
+    }else {  
+      return "$weeks weeks ago";  
+    }  
+   } else if($months <=12){  
+    if($months==1){  
+      return "a month ago";  
+    }else{  
+      return "$months months ago";  
+    }  
+   }else {  
+    if($years==1){  
+      return "one year ago";  
+    }else {  
+      return "$years years ago";  
+    }  
+   }  
+} 
 function penomoran_customer(){
     
     $cek=App\Models\Customer::count();
@@ -299,6 +361,19 @@ function penomoran_cost_center($customer_code){
         $nomor=$master->cost.sprintf("%03s",  $urutan);
     }else{
         $nomor=$master->cost.sprintf("%03s",  1);
+    }
+    return $nomor;
+}
+function penomoran_cost_center_tagihan($cost_center){
+   $cs=strlen($cost_center);
+    $cek=App\Models\ProjectTagihan::where('cost_center',$cost_center)->where('type_tagihan',2)->count();
+    if($cek>0){
+        $mst=App\Models\ProjectTagihan::where('cost_center',$cost_center)->where('type_tagihan',2)->orderBy('cost_center_no','Desc')->firstOrfail();
+        $urutan = (int) substr($mst['cost_center_no'],$cs, 3);
+        $urutan++;
+        $nomor=$cost_center.sprintf("%03s",  $urutan);
+    }else{
+        $nomor=$cost_center.sprintf("%03s",  1);
     }
     return $nomor;
 }

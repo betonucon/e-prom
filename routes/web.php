@@ -10,6 +10,7 @@ use App\Http\Controllers\CostController;
 use App\Http\Controllers\RKontrakController;
 use App\Http\Controllers\PengadaanController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\PekerjaanController;
 use App\Http\Controllers\Auth\LogoutController;
 /*
 |--------------------------------------------------------------------------
@@ -105,10 +106,15 @@ Route::group(['prefix' => 'material','middleware'    => 'auth'],function(){
 
 Route::group(['prefix' => 'project','middleware'    => 'auth'],function(){
     Route::get('/',[RProjectController::class, 'index']);
+    Route::get('/pm',[RProjectController::class, 'index_pm']);
+    Route::get('/getdatadashboard',[RProjectController::class, 'get_data_dashboard']);
+    Route::get('/getdatadashboard_pm',[RProjectController::class, 'get_data_dashboard_pm']);
     Route::get('/view',[RProjectController::class, 'view_data']);
     Route::get('/form_send',[RProjectController::class, 'form_send']);
     Route::get('/timeline',[RProjectController::class, 'timeline']);
     Route::get('/getdata',[RProjectController::class, 'get_data']);
+    Route::get('/getdatapm',[RProjectController::class, 'get_data_pm']);
+    Route::get('/getdataview',[RProjectController::class, 'get_data_view']);
     Route::get('/getbiaya',[RProjectController::class, 'get_biaya']);
     Route::get('/getrekap',[RProjectController::class, 'get_data_rekap']);
     Route::get('/getdatalog',[RProjectController::class, 'get_data_log']);
@@ -187,9 +193,21 @@ Route::group(['prefix' => 'pengadaan','middleware'    => 'auth'],function(){
     Route::post('/store_ready',[PengadaanController::class, 'store_ready']);
     Route::get('/modal_verifikasi',[PengadaanController::class, 'modal_verifikasi']);
 });
+Route::group(['prefix' => 'pekerjaan','middleware'    => 'auth'],function(){
+    Route::get('/',[PekerjaanController::class, 'index']);
+    Route::get('/getdata',[PekerjaanController::class, 'get_data']);
+    Route::get('/getdatadetail',[PekerjaanController::class, 'get_data_detail']);
+    
+    Route::get('/view',[PekerjaanController::class, 'view_data']);
+    Route::get('/modal_aktifitas',[PekerjaanController::class, 'modal_aktifitas']);
+    Route::get('/delete_aktifitas',[PekerjaanController::class, 'delete_aktifitas']);
+    Route::get('/close_data',[PekerjaanController::class, 'close_data']);
+    Route::get('/cetak',[PekerjaanController::class, 'cetak']);
+    Route::post('/aktifitas',[PekerjaanController::class, 'store_aktifitas']);
+});
 Route::group(['prefix' => 'kontrak','middleware'    => 'auth'],function(){
     Route::get('/',[RKontrakController::class, 'index']);
-    Route::get('/pekerjaan',[RKontrakController::class, 'index_pekerjaan']);
+    Route::get('/getdatadashboard',[RKontrakController::class, 'get_data_dashboard']);
     Route::get('/form_kontrak',[RKontrakController::class, 'form_kontrak']);
     Route::get('/view',[RKontrakController::class, 'view_data']);
     Route::get('/cetak',[RKontrakController::class, 'cetak']);
@@ -260,12 +278,22 @@ Route::group(['middleware' => 'auth'], function() {
 Route::group(['prefix' => 'user'],function(){
     Route::get('/', [UserController::class, 'index']);
     Route::post('/', [UserController::class, 'store']);
+    Route::post('/store_avatar', [UserController::class, 'store_avatar']);
     Route::get('/create', [UserController::class, 'create']);
+    
     Route::get('/get_data', [UserController::class, 'get_data']);
+});
+Route::group(['prefix' => 'sales'],function(){
+    Route::get('/', [UserController::class, 'index_sales']);
+    Route::post('/', [UserController::class, 'store_sales']);
+    Route::get('/create', [UserController::class, 'create_sales']);
+    Route::get('/view/{id}', [UserController::class, 'view_sales']);
+    Route::get('/get_data', [UserController::class, 'get_data_sales']);
 });
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/home/get_data', [App\Http\Controllers\HomeController::class, 'get_data']);
+Route::get('/home/get_data_one', [App\Http\Controllers\HomeController::class, 'get_data_one']);
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

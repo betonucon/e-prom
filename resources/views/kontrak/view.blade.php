@@ -66,7 +66,6 @@
 					beforeSend: function() {
 						$('#total-biaya').html('<p class="card-text placeholder-glow"><span class="placeholder col-12"></span></p>')
 					},
-					
 					success: function (data) {
 						$("#nilai-project").html('Rp.'+data.nilai_project);
 						$("#total-biaya").html('Rp.'+data.subtotal);
@@ -395,7 +394,7 @@
 						<div class="tab-pane" id="dataaktifitas" role="tabpanel">
 							<div class="row">
 								<div class="col-md-8">
-									<span onclick="ubah_detail(`0`,5)" class="btn btn-success btn-sm waves-effect waves-light "><i class="mdi mdi-plus-circle-outline"></i> Add Pekerjaan</span>
+									<span onclick="ubah_detail(`0`,5)" class="btn btn-success btn-sm waves-effect waves-light "><i class="mdi mdi-plus-circle-outline"></i> Tambah Pekerjaan</span>
 								</div>
 								<div class="col-md-4">
 									<div class="mb-2">
@@ -549,7 +548,7 @@
 				<h5 class="modal-title" id="titleubah"></h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body">
+			<div class="modal-body" style="background: #f3f3f9;">
 				<form class="form-horizontal" id="mydatadetail" method="post" action="{{ url('project/store_import_material') }}" enctype="multipart/form-data" >
 					@csrf
 					<input type="hidden" name="project_header_id" value="{{$id}}">
@@ -692,7 +691,7 @@
 				$('#titleubah').html('Form Pekerjaan')
 				
 				$('#modal-tambahdetail').modal('show');
-				$('#form-tambahdetail').load("{{url('kontrak/modal_detail')}}?id="+id+"&kategori="+kategori);
+				$('#form-tambahdetail').load("{{url('kontrak/modal_detail')}}?id="+id+"&kategori="+kategori+"&type_tagihan={{$data->type_tagihan}}");
 				
 			} 
 			function show_import(){

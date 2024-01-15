@@ -516,7 +516,7 @@
 								<div class="avatar-title bg-light text-success display-5 rounded-circle"><i class="ri-mail-send-fill"></i></div>
 							</div>
 							<div class="mt-4 pt-2 fs-15" style="text-align: center;">
-								<h4 class="fs-20 fw-semibold">Verifikasi Rencana Biaya</h4>
+								<h4 class="fs-20 fw-semibold">Verifikasi Pengajuan Kontrak</h4>
 								<p class="text-muted mb-0 mt-3 fs-13">{{$data->deskripsi_project}}</p>
 							</div>
 						</div>
@@ -684,7 +684,7 @@
 									buttonsStyling:!1,
 									showCloseButton:!0
 								});
-								location.assign("{{url('project')}}");
+								location.assign("{{url('kontrak')}}");
 							}else{
 								document.getElementById("loadnya").style.width = "0px";
 								Swal.fire({

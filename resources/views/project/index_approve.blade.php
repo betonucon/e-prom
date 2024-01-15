@@ -30,7 +30,28 @@
         Author: Sean Ngu
         Website: http://www.seantheme.com/color-admin/admin/
         */
-        
+        function load_data(){
+			$.ajax({ 
+                type: 'GET', 
+                url: "{{ url('project/getdatadashboard')}}", 
+                data: { ide: 1 }, 
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#rencana').val(0)
+                    $('#penyusunan').val(0)
+                    $('#approve').val(0)
+                    $('#varifikasi').val(0)
+                    
+                },
+                success: function (data) {
+                    $('#rencana').html('<span class="counter-value" data-target="'+data.rencana+'" ></span>'+data.rencana);
+                    $('#penyusunan').html('<span class="counter-value" data-target="'+data.penyusunan+'" ></span>'+data.penyusunan);
+                    $('#approve').html('<span class="counter-value" data-target="'+data.approve+'" ></span>'+data.approve);
+                    $('#verifikasi').html('<span class="counter-value" data-target="'+data.verifikasi+'" ></span>'+data.verifikasi);
+                  
+                }
+            });
+        }
         function show_data() {
             if ($('#data-table-fixed-header').length !== 0) {
                 var table=$('#data-table-fixed-header').DataTable({
@@ -73,7 +94,7 @@
 
         $(document).ready(function() {
 			show_data();
-
+            load_data();
 		});
 
 		
@@ -101,6 +122,121 @@
                 
 
                 <div class="row">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6">
+                                <!-- card -->
+                            
+                                <!-- card -->
+                                <div class="card card-animate  bg-soft-warning">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Total RABOB</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <h5 class="text-success fs-14 mb-0">
+                                                    <i class="ri-arrow-right-up-line fs-13 align-middle" ></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            <div>
+                                                <h4 class="fs-22 fw-semibold ff-secondary mb-4" id="rencana"></h4>
+                                                
+                                            </div>
+                                            <div class="avatar-sm flex-shrink-0">
+                                                <span class="avatar-title bg-success rounded fs-3">
+                                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card card-animate bg-soft-info">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">  Penyusunan</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <h5 class="text-success fs-14 mb-0">
+                                                    <i class="ri-arrow-right-up-line fs-13 align-middle" ></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            <div>
+                                                <h4 class="fs-22 fw-semibold ff-secondary mb-4" id="penyusunan"></h4>
+                                                
+                                            </div>
+                                            <div class="avatar-sm flex-shrink-0">
+                                                <span class="avatar-title bg-success rounded fs-3">
+                                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card card-animate bg-soft-success">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">  Approval</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <h5 class="text-success fs-14 mb-0">
+                                                    <i class="ri-arrow-right-up-line fs-13 align-middle" ></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            <div>
+                                                <h4 class="fs-22 fw-semibold ff-secondary mb-4" id="approve"></h4>
+                                                
+                                            </div>
+                                            <div class="avatar-sm flex-shrink-0">
+                                                <span class="avatar-title bg-success rounded fs-3">
+                                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card card-animate bg-soft-secondary">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">  Bidding</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <h5 class="text-success fs-14 mb-0">
+                                                    <i class="ri-arrow-right-up-line fs-13 align-middle" ></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            <div>
+                                                <h4 class="fs-22 fw-semibold ff-secondary mb-4" id="verifikasi"></h4>
+                                                
+                                            </div>
+                                            <div class="avatar-sm flex-shrink-0">
+                                                <span class="avatar-title bg-success rounded fs-3">
+                                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+                        </div>
+                    </div>
                     <div class="col-lg-12">
                         <div class="card">
                             

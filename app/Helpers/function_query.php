@@ -20,6 +20,10 @@ function get_kategori_stok(){
     $data=App\Models\StokKategori::orderBy('id','Asc')->get();
     return $data;
 }
+function get_detail_pekerjaan($project_pekerjaan_id){
+    $data=App\Models\ProjectDetailPekerjaan::where('project_pekerjaan_id',$project_pekerjaan_id)->orderBy('tanggal_aktifitas','Asc')->get();
+    return $data;
+}
 function get_periode($id){
     $data=App\Models\ViewProjectperiode::where('project_header_id',$id)->orderBy('id','Asc')->get();
     return $data;
@@ -230,8 +234,30 @@ function get_progres_project(){
     $data=App\Models\ViewHeaderProjectcontrol::where('status_id',9)->where('total_task_progres','!=',100)->orderBy('id','Asc')->get();
     return $data;
 }
+function img_profil($users_id){
+    $cek=App\Models\User::where('id',$users_id)->where('photo','!=',null)->where('photo','!=',"")->count();
+    if($cek>0){
+        $data=App\Models\User::where('id',$users_id)->first();
+        return url_plug().'/attach/profil/'.$data->photo.'?v='.date('Ymdhis');
+        
+        
+    }else{
+        // $data=App\Models\User::where('id',$users_id)->first();
+        return url_plug().'/img/akun.png';
+    }
+    
+}
 function get_kontrak(){
-    $data=App\Models\ViewHeaderProject::where('status_id','>',6)->where('status_id','!=',50)->orderBy('id','Asc')->get();
+    if(Auth::user()->role_id==6 || Auth::user()->role_id==5){
+        $data=App\Models\ViewHeaderProject::where('status_id','>',12)->where('status_id','!=',50)->orderBy('id','Asc')->get();
+    }else{
+        $data=App\Models\ViewHeaderProject::where('status_id','>',12)->where('status_id','!=',50)->orderBy('id','Asc')->get();
+    }
+    
+    return $data;
+}
+function get_kontrak_dashboard(){
+    $data=App\Models\ViewHeaderProject::where('status_id','>',12)->where('status_id','!=',50)->orderBy('id','Asc')->get();
     return $data;
 }
 function get_customer_project(){
@@ -248,6 +274,10 @@ function get_biaya(){
 }
 function count_pm(){
     $data=App\Models\HeaderProject::where('nik_pm',Auth::user()->username)->count();
+    return $data;
+}
+function count_pm_id($id){
+    $data=App\Models\HeaderProject::where('id',$id)->where('nik_pm',Auth::user()->username)->count();
     return $data;
 }
 function get_status(){

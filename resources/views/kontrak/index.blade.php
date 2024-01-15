@@ -30,7 +30,28 @@
         Author: Sean Ngu
         Website: http://www.seantheme.com/color-admin/admin/
         */
-        
+        function load_data(){
+			$.ajax({ 
+                type: 'GET', 
+                url: "{{ url('project/getdatadashboard')}}", 
+                data: { ide: 1 }, 
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#project').val(0)
+                    $('#rencana').val(0)
+                    $('#selesai').val(0)
+                    $('#persen').val(0)
+                    
+                },
+                success: function (data) {
+                    $('#project').html('<span class="counter-value" data-target="'+data.project+'" ></span>'+data.project);
+                    $('#rencana').html('<span class="counter-value" data-target="'+data.rencana+'" ></span>'+data.rencana);
+                    $('#selesai').html('<span class="counter-value" data-target="'+data.selesai+'" ></span>'+data.selesai);
+                    $('#persen').html('<span class="counter-value" data-target="'+data.persen+'" ></span>'+data.persen+'%');
+                  
+                }
+            });
+        }
         function show_data() {
             if ($('#data-table-fixed-header').length !== 0) {
                 var table=$('#data-table-fixed-header').DataTable({
@@ -50,6 +71,7 @@
 							} 
 						},
                         
+						{ data: 'persennya' },
 						{ data: 'action' },
                         { data: 'customer' },
 						{ data: 'judul' },
@@ -74,6 +96,7 @@
 
         $(document).ready(function() {
 			show_data();
+			load_data();
 
 		});
 
@@ -102,6 +125,95 @@
                 
 
                 <div class="row">
+                    
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-xl-4 col-md-6">
+                                <!-- card -->
+                            
+                                <!-- card -->
+                                <div class="card card-animate  bg-soft-warning">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Total Project</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <h5 class="text-success fs-14 mb-0">
+                                                    <i class="ri-arrow-right-up-line fs-13 align-middle" ></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            <div>
+                                                <h4 class="fs-22 fw-semibold ff-secondary mb-4" id="project"></h4>
+                                                
+                                            </div>
+                                            <div class="avatar-sm flex-shrink-0">
+                                                <span class="avatar-title bg-success rounded fs-3">
+                                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card card-animate bg-soft-info">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">  Project Close / Selesai</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <h5 class="text-success fs-14 mb-0">
+                                                    <i class="ri-arrow-right-up-line fs-13 align-middle" ></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            <div>
+                                                <h4 class="fs-22 fw-semibold ff-secondary mb-4" id="selesai"></h4>
+                                                
+                                            </div>
+                                            <div class="avatar-sm flex-shrink-0">
+                                                <span class="avatar-title bg-success rounded fs-3">
+                                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card card-animate bg-soft-info">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">  Persentase</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <h5 class="text-success fs-14 mb-0">
+                                                    <i class="ri-arrow-right-up-line fs-13 align-middle" ></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-end justify-content-between mt-4">
+                                            <div>
+                                                <h4 class="fs-22 fw-semibold ff-secondary mb-4" id="persen"></h4>
+                                                
+                                            </div>
+                                            <div class="avatar-sm flex-shrink-0">
+                                                <span class="avatar-title bg-success rounded fs-3">
+                                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+                        </div>
+                    </div>
                     <div class="col-lg-12">
                         <div class="card">
                             
@@ -119,6 +231,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col" style="width: 10px;">No</th>
+                                            <th scope="col" style="width: 10px;">%</th>
                                             
                                             <th scope="col" style="width: 10px;"></th>
                                             <th scope="col" width="20%">Customer</th>

@@ -138,10 +138,18 @@
 								return meta.row + meta.settings._iDisplayStart + 1;
 							} 
 						},
+						{ data: 'urut' },
+						{ data: 'persennya' },
+						
+						
+						@if($data->status_id<14 && count_pm_id($data->id)>0)
+						{ data: 'action' },
+						@endif
 						{ data: 'pekerjaan' },
 						{ data: 'mulai' },
 						{ data: 'sampai' },
 						{ data: 'selsih_waktu' },
+						{ data: 'sisa_waktu' },
 						{ data: 'created_at' },
 						
 					],
@@ -274,7 +282,7 @@
 										<tr>
 											<td style="padding: 3px 16px;"  class="fw-medium" scope="row" width="20%"><b>Cost Center</b></td>
 											<td style="padding: 3px 16px;"  class="fw-medium" scope="row" width="3%"><b>:</b></td>
-											<td style="padding: 3px 16px;" >{{$data->cost_center_project}}</td>
+											<td style="padding: 3px 16px;" >{{$data->cost_center_project}} </td>
 										</tr>
 										<tr>
 											<td style="padding: 3px 16px;"  class="fw-medium" scope="row"><b>Nomor Kontrak</b></td>
@@ -386,7 +394,9 @@
 						<div class="tab-pane" id="dataaktifitas" role="tabpanel">
 							<div class="row">
 								<div class="col-md-8">
-									
+									@if($data->status_id<14 && count_pm_id($data->id)>0)
+									<span onclick="ubah_detail(`0`,5)" class="btn btn-success  waves-effect waves-light "><i class="mdi mdi-plus-circle-outline"></i> Tambah Pekerjaan</span>
+									@endif
 								</div>
 								<div class="col-md-4">
 									<div class="mb-2">
@@ -398,11 +408,18 @@
 								<thead>
 									<tr>
 										<th width="4%"></th>
-										<th >Pekerjaan</th>
+										<th width="4%">Kode</th>
+										<th width="4%">%</th>
+										@if($data->status_id<14 && count_pm_id($data->id)>0)
+										<th width="3%"></th>
+										@endif
+										<th >Pekerjaan </th>
 										<th width="10%">Mulai</th>
 										<th width="10%">Sampai</th>
-										<th width="10%">T.Hari</th>
+										<th width="10%">Rencana</th>
+										<th width="4%">Realisasi</th>
 										<th width="10%">Update</th>
+										
 									</tr>
 								</thead>
 								
@@ -680,7 +697,7 @@
 				$('#titleubah').html('Form Pekerjaan')
 				
 				$('#modal-tambahdetail').modal('show');
-				$('#form-tambahdetail').load("{{url('kontrak/modal_detail')}}?id="+id+"&kategori="+kategori);
+				$('#form-tambahdetail').load("{{url('kontrak/modal_detail')}}?id="+id+"&kategori="+kategori+"&type_tagihan={{$data->type_tagihan}}");
 				
 			} 
 			function show_import(){
@@ -868,57 +885,56 @@
 			function simpan_detail(){
           
             
-				var form=document.getElementById('mydatadetail');
-				
-					
-					$.ajax({
-						type: 'POST',
-						url: "{{ url('kontrak/store_detail') }}",
-						data: new FormData(form),
-						contentType: false,
-						cache: false,
-						processData:false,
-						beforeSend: function() {
-							document.getElementById("loadnya").style.width = "100%";
-						},
-						success: function(msg){
-							var bat=msg.split('@');
-							if(bat[1]=='ok'){
-								document.getElementById("loadnya").style.width = "0px";
-								Swal.fire({
-									title:"Notifikasi",
-									html:'Success ',
-									icon:"success",
-									confirmButtonText: 'Close',
-									confirmButtonClass:"btn btn-info w-xs mt-2",
-									buttonsStyling:!1,
-									showCloseButton:!0
-								});
-								$('#modal-tambahdetail').modal('hide');
-								$('#form-tambahdetail').html("");
-								
-								var tables=$('#data-fixed-header-aktifitas').DataTable();
-									tables.ajax.url("{{ url('kontrak/getdatapekerjaan')}}?id={{$data->id}}").load();
-								
-								
-							}else{
-								document.getElementById("loadnya").style.width = "0px";
-                                Swal.fire({
-                                    title:"Notifikasi",
-                                    html:'<div style="background:#f2f2f5;padding:1%;text-align:left;font-size:13px">'+msg+'</div>',
-                                    icon:"error",
-                                    confirmButtonText: 'Close',
-                                    confirmButtonClass:"btn btn-danger w-xs mt-2",
-                                    buttonsStyling:!1,
-                                    showCloseButton:!0
-                                });
-								
-							}
+		  		var form=document.getElementById('mydatadetail');
+		  
+				$.ajax({
+					type: 'POST',
+					url: "{{ url('kontrak/store_detail') }}",
+					data: new FormData(form),
+					contentType: false,
+					cache: false,
+					processData:false,
+					beforeSend: function() {
+						document.getElementById("loadnya").style.width = "100%";
+					},
+					success: function(msg){
+						var bat=msg.split('@');
+						if(bat[1]=='ok'){
+							document.getElementById("loadnya").style.width = "0px";
+							Swal.fire({
+								title:"Notifikasi",
+								html:'Success ',
+								icon:"success",
+								confirmButtonText: 'Close',
+								confirmButtonClass:"btn btn-info w-xs mt-2",
+								buttonsStyling:!1,
+								showCloseButton:!0
+							});
+							$('#modal-tambahdetail').modal('hide');
+							$('#form-tambahdetail').html("");
 							
+							var tables=$('#data-fixed-header-aktifitas').DataTable();
+								tables.ajax.url("{{ url('kontrak/getdatapekerjaan')}}?id={{$data->id}}").load();
+							
+							
+						}else{
+							document.getElementById("loadnya").style.width = "0px";
+							Swal.fire({
+								title:"Notifikasi",
+								html:'<div style="background:#f2f2f5;padding:1%;text-align:left;font-size:13px">'+msg+'</div>',
+								icon:"error",
+								confirmButtonText: 'Close',
+								confirmButtonClass:"btn btn-danger w-xs mt-2",
+								buttonsStyling:!1,
+								showCloseButton:!0
+							});
 							
 						}
-					});
-        	}
+						
+						
+					}
+				});
+	  		}
 			function reset_material(id){
                
 			   Swal.fire({
